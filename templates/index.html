@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Car Value Estimator</title>
+    <link rel="stylesheet" href="static/css/style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Side Navigation -->
+        <div class="side-nav">
+            <div class="brand">
+                <i class="fas fa-car"></i>
+                <span>CarValue</span>
+            </div>
+            <nav>
+                <ul>
+                    <li class="active"><a href="#"><i class="fas fa-calculator"></i> Estimator</a></li>
+                    <li><a href="#"><i class="fas fa-chart-line"></i> Market Trends</a></li>
+                    <li><a href="#"><i class="fas fa-history"></i> History</a></li>
+                    <li><a href="#"><i class="fas fa-question-circle"></i> Help</a></li>
+                </ul>
+            </nav>
+            <div class="side-footer">
+                <p>&copy; 2025 CarValue</p>
+            </div>
+        </div>
+
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <header class="top-header">
+                <div class="search-bar">
+                    <i class="fas fa-search"></i>
+                    <input type="text" placeholder="Search...">
+                </div>
+                <div class="user-actions">
+                    <a href="#" class="btn-action"><i class="fas fa-bell"></i></a>
+                    <a href="#" class="btn-action"><i class="fas fa-cog"></i></a>
+                    <a href="#" class="btn-user"><i class="fas fa-user-circle"></i></a>
+                </div>
+            </header>
+
+            <div class="content-area">
+                <!-- Welcome Banner -->
+                <div class="welcome-banner">
+                    <div class="banner-content">
+                        <h1>Get Your Car's Value</h1>
+                        <p>Our AI-powered estimator provides accurate market values instantly</p>
+                    </div>
+                    <div class="banner-image"></div>
+                </div>
+
+                <!-- Estimation Form Card -->
+                <div class="card estimation-card">
+                    <div class="card-body">
+                        <h2 class="section-title">Car Details</h2>
+                        <form id="predictForm" method="post" enctype="multipart/form-data">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="company">
+                                            <span class="icon"><i class="fas fa-building"></i></span>
+                                            Brand
+                                        </label>
+                                        <select class="form-control custom-select" id="company" name="company" required>
+                                            <option value="">Select brand</option>
+                                            {% for company in companies %}
+                                                <option value="{{ company }}">{{ company }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="car_models">
+                                            <span class="icon"><i class="fas fa-car-side"></i></span>
+                                            Model
+                                        </label>
+                                        <select class="form-control custom-select" id="car_models" name="car_models" required>
+                                            <option value="">Select model</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="year">
+                                            <span class="icon"><i class="fas fa-calendar"></i></span>
+                                            Year
+                                        </label>
+                                        <select class="form-control custom-select" id="year" name="year" required>
+                                            <option value="">Select year</option>
+                                            {% for year in years %}
+                                                <option value="{{ year }}">{{ year }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="form-group">
+                                        <label for="fuel_type">
+                                            <span class="icon"><i class="fas fa-gas-pump"></i></span>
+                                            Fuel Type
+                                        </label>
+                                        <select class="form-control custom-select" id="fuel_type" name="fuel_type" required>
+                                            <option value="">Select fuel type</option>
+                                            {% for fuel in fuel_types %}
+                                                <option value="{{ fuel }}">{{ fuel }}</option>
+                                            {% endfor %}
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label for="kilo_driven">
+                                    <span class="icon"><i class="fas fa-road"></i></span>
+                                    Kilometres Driven
+                                </label>
+                                <input type="number" class="form-control" id="kilo_driven" name="kilo_driven" 
+                                       placeholder="Enter kilometers" required>
+                            </div>
+
+                            <button type="submit" class="btn btn-estimate">
+                                <span>Estimate Value</span>
+                                <i class="fas fa-arrow-right"></i>
+                            </button>
+                        </form>
+                    </div>
+                </div>
+
+                <!-- Results Display -->
+                <div class="result-container">
+                    <div class="result-panel">
+                        <div class="result-header">
+                            <h3>Estimated Value</h3>
+                        </div>
+                        <div class="result-body">
+                            <div class="result-icon">
+                                <i class="fas fa-tag"></i>
+                            </div>
+                            <div class="result-value">
+                                <span id="prediction">₹ 0</span>
+                            </div>
+                            <div class="result-note">
+                                Based on current market data and vehicle condition
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Car Showcase -->
+                <div class="showcase-section">
+                    <h2 class="section-title">Popular Cars</h2>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="car-card">
+                                <div class="car-image car-image-1"></div>
+                                <div class="car-details">
+                                    <h4>Luxury Sedan</h4>
+                                    <p>Premium comfort with advanced features</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="car-card">
+                                <div class="car-image car-image-2"></div>
+                                <div class="car-details">
+                                    <h4>Sport SUV</h4>
+                                    <p>Powerful performance with spacious interior</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="car-card">
+                                <div class="car-image car-image-3"></div>
+                                <div class="car-details">
+                                    <h4>Electric Hatchback</h4>
+                                    <p>Eco-friendly with modern technology</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <footer class="main-footer">
+                <div class="container-fluid">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>Powered by advanced machine learning algorithms</p>
+                        </div>
+                        <div class="col-md-6 text-right">
+                            <div class="social-links">
+                                <a href="#"><i class="fab fa-facebook"></i></a>
+                                <a href="#"><i class="fab fa-twitter"></i></a>
+                                <a href="#"><i class="fab fa-instagram"></i></a>
+                                <a href="#"><i class="fab fa-linkedin"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </footer>
+        </div>
+    </div>
+
+    <script>
+        const companyModels = {{ company_models | tojson | safe }};
+
+        document.getElementById("company").addEventListener("change", function () {
+            const company = this.value;
+            const modelSelect = document.getElementById("car_models");
+            modelSelect.innerHTML = '<option value="">Select a model</option>';
+
+            if (company && companyModels[company]) {
+                companyModels[company].forEach(function (model) {
+                    const option = document.createElement("option");
+                    option.value = model;
+                    option.text = model;
+                    modelSelect.appendChild(option);
+                });
+            }
+        });
+
+        document.getElementById("predictForm").addEventListener("submit", function (e) {
+            e.preventDefault();
+
+            const formData = new FormData(this);
+            const xhr = new XMLHttpRequest();
+            xhr.open("POST", "/predict", true);
+
+            document.getElementById("prediction").innerText = "Calculating...";
+            document.querySelector('.result-panel').classList.add('loading');
+
+            xhr.onload = function () {
+                document.querySelector('.result-panel').classList.remove('loading');
+                if (xhr.status === 200) {
+                    document.getElementById("prediction").innerText = "₹" + xhr.responseText;
+                    document.querySelector('.result-panel').classList.add('active');
+                    
+                    // Scroll to result
+                    document.querySelector('.result-container').scrollIntoView({
+                        behavior: 'smooth'
+                    });
+                } else {
+                    document.getElementById("prediction").innerText = "Prediction failed";
+                }
+            };
+
+            xhr.send(formData);
+        });
+    </script>
+
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"></script>
+</body>
+</html>
